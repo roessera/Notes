@@ -1,0 +1,655 @@
+//can you assign property properties (like atomic/strong) to other variables besides @property ? 
+
+
+UI* classes = cocoa touch
+NS* classes = cocoa
+
+Mutable = changes
+Immutable = doesnt change
+
+-----------------
+immutable vs const
+-----------------
+
+	Immutable : 
+	Const : values not calculated , scope does not change. Only allowed to call const member functions on that obj. 
+
+--------------
+Variable types
+--------------
+	Scalar : (non-object), like int, float, and char
+
+
+-----------------
+@Property properties
+-----------------
+
+	-Atomic 			: (default)  ensures values are always fully retrieved, even from different threads
+	-Nonatomic 			: no gurantees
+
+	-Strong/-Retain 	: (default) "owns" the object you are referencing, and will not be destroyed until assigned to 'nil'
+	-Weak 				:  does not own object, only continues to live if a strong reference references weak object
+
+	-Assign 			: (default)
+	-Copy				: Create a copy of the assigned value instead of referencing the existing instance.
+
+	-Unsafe_unretained
+
+	-readwrite 			: (default)
+	-readonly  			: Don’t synthesize a setter method.
+
+------------------------------
+@property vs instance variable (ivar)
+------------------------------
+
+	@property:
+		
+		@interface GameCenterManager : NSObject
+
+			//generates getters and setters for the instance variable//
+			@property (weak, nonatomic) GKInvite* pendingInvite;  
+
+		@end
+
+	instance variable: 
+		@interface GameCenterManager : NSObject{
+			
+			//Define instance variables//
+			GKInvite* pendingInvite; 
+
+		}
+
+			// Method definitions.//
+
+		@end
+
+-----------------
+Catergories 
+-----------------
+
+	@interface MyClass () // ()  <!---denotes Category --->
+		// more property declarations which seem like they can go in the .h file
+	@end
+
+	// again in the .m file (what's the purpose of private?)
+	@interface MyClass (Private)
+		// some method declarations
+	@end
+
+
+-----------------
+Defining CLASS variables
+-----------------
+
+	@interface Someclass : NSObject {
+	 	//creates class variable
+	 	NSString *forExample; 
+	}
+	@end
+
+	vs.
+
+	@implementation Someclass
+		
+		NSString *anotherExample; <!--- creates global variable accessible to all classes on .m file, DOES NOT CREATE A CLASS VARIABLE --->
+	@end
+
+
+	The latter is not defining an instance variable. Rather, it is defining a global variable in the .m file. Such a variable is not unique to or part of any object instance.
+
+	Such globals have their uses (roughly equivalent C++ static members; e.g. storing a singleton instance), 
+	but normally you would define them at the top of the file before the @implementation directive.
+
+	Someclass* firstObject = [[Someclass alloc] init];
+	Someclass* secondObject = [[Someclass alloc] init];
+
+	//forExample is an instance variable, and is unique to each instance.
+	[firstObject setForExample:@"One"];
+	[secondObject setForExample:@"Two"];
+	NSLog(@"%@",[firstObject forExample]); //Result: "One"
+	NSLog(@"%@",[secondObject forExample]); //Result: "Two"
+
+	//anotherExample is a global variable, and is NOT unique to each instance.
+	[firstObject setAnotherExample:@"One"];
+	[secondObject setAnotherExample:@"Two"];
+	NSLog(@"%@",[firstObject anotherExample]); //Result: "Two" (!)
+	NSLog(@"%@",[secondObject anotherExample]); //Result: "Two"
+
+
+
+
+
+
+------------------
+Protocols
+------------------
+
+	A protocol, is used to declare methods and properties that are independent of any specific class.
+
+	- (void)setMyValue:(id<NSCopying>)foo;
+
+	In the above statement, foo may be an instance of any class that conforms to the NSCopying protocol
+
+
+
+------------
+Blocks ^(type name){}
+------------
+
+
+    Block objects (informally, “blocks”) are an extension to C, as well as Objective-C and C++, 
+    that make it easy for programmers to define self-contained units of work. 
+    Blocks are similar to — but far more powerful than — traditional function pointers. The key differences are:
+
+    	-Blocks can be defined inline, as “anonymous functions.”
+    	-Blocks capture read-only copies of local variables, similar to “closures” in other languages
+
+    Blocks can be defined inline, as “anonymous functions.” Blocks capture read-only copies of local variables, 
+    similar to “closures” in other languages This is kind of functionality is common in dynamically-typed interpreted languages, 
+    but has never before been widely available to C programmers. Apple has published both the Blocks Languages Specification and our 
+    implementation as open source under the MIT license, added blocks support to GCC 4.2 and clang, and has submitted it for consideration as part of the next version of the C programming language.
+
+	Declaring a block variable:
+
+		void (^my_block)(void);
+
+	Assigning a block object to it:
+
+		my_block = ^(void){ printf("hello world\n"); };
+
+	Invoking it:
+
+		my_block(); // prints “hello world\n”
+
+	Accepting a block as an argument:
+
+		- (void)doSomething:(void (^)(void))block;
+
+	Using that method with an inline block:
+
+		[obj doSomeThing:^(void){ printf("block was called"); }];
+
+
+
+
+
+
+-----------------
+self
+----------------
+
+	@interface XYZCalculator : NSObject
+		@property double currentValue;
+	@end
+
+
+	@implementation XYZCalculator
+
+	- (void)increment {
+	    self.currentValue++;  //self can refer to property declared in interface//
+	}
+
+	@end
+
+
+
+--------------------
+Best Practices 
+--------------------
+
+	//Speaking of private things, I prefer to place private method definitions within the .m file in a class extension like so:
+
+
+	#import "MyClass.h"
+
+	@interface MyClass ()
+	- (void) someMethod;
+	- (void) someOtherMethod;
+	@end
+
+	@implementation MyClass
+
+
+---------------
+Single Quotes - Declares a single character constants
+Double Quotes - Declares a string
+---------------
+
+
+-----------------
+Output variables
+----------------
+	//https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Strings/Articles/formatSpecifiers.html
+
+	%@	Objective-C object, printed as the string returned by descriptionWithLocale: if available, or description otherwise. Also works with CFTypeRef objects, returning the result of the CFCopyDescription function.
+	%%	'%' character.
+	%d, %D	Signed 32-bit integer (int).
+	%u, %U	Unsigned 32-bit integer (unsigned int).
+	%x	Unsigned 32-bit integer (unsigned int), printed in hexadecimal using the digits 0–9 and lowercase a–f.
+	%X	Unsigned 32-bit integer (unsigned int), printed in hexadecimal using the digits 0–9 and uppercase A–F.
+	%o, %O	Unsigned 32-bit integer (unsigned int), printed in octal.
+	%f	64-bit floating-point number (double).
+	%e	64-bit floating-point number (double), printed in scientific notation using a lowercase e to introduce the exponent.
+	%E	64-bit floating-point number (double), printed in scientific notation using an uppercase E to introduce the exponent.
+	%g	64-bit floating-point number (double), printed in the style of %e if the exponent is less than –4 or greater than or equal to the precision, in the style of %f otherwise.
+	%G	64-bit floating-point number (double), printed in the style of %E if the exponent is less than –4 or greater than or equal to the precision, in the style of %f otherwise.
+	%c	8-bit unsigned character (unsigned char), printed by NSLog() as an ASCII character, or, if not an ASCII character, in the octal format \\ddd or the Unicode hexadecimal format \\udddd, where d is a digit.
+	%C	16-bit Unicode character (unichar), printed by NSLog() as an ASCII character, or, if not an ASCII character, in the octal format \\ddd or the Unicode hexadecimal format \\udddd, where d is a digit.
+	%s	Null-terminated array of 8-bit unsigned characters. Because the %s specifier causes the characters to be interpreted in the system default encoding, the results can be variable, especially with right-to-left languages. For example, with RTL, %s inserts direction markers when the characters are not strongly directional. For this reason, it’s best to avoid %s and specify encodings explicitly.
+	%S	Null-terminated array of 16-bit Unicode characters.
+	%p	Void pointer (void *), printed in hexadecimal with the digits 0–9 and lowercase a–f, with a leading 0x.
+	%a	64-bit floating-point number (double), printed in scientific notation with a leading 0x and one hexadecimal digit before the decimal point using a lowercase p to introduce the exponent.
+	%A	64-bit floating-point number (double), printed in scientific notation with a leading 0X and one hexadecimal digit before the decimal point using a uppercase P to introduce the exponent.
+	%F	64-bit floating-point number (double), printed in decimal notation
+
+
+---------------------
+MCV
+---------------------
+
+View : 
+	@interface BadProgViewController : UIViewController 
+
+
+-----------------
+Delegates - //http://stackoverflow.com/questions/626898/how-do-i-create-delegates-in-objective-c//
+-----------------
+
+Main classes: 
+
+	-NSResponder (Appkit - OS) 
+	-UIResponder (UIKit -iOS)
+
+Adding delegation to class : 
+
+	-Use protocol : 
+
+		-@interface DelegateExampleViewController : UIViewController <CustomClassDelegate> {
+
+		}
+
+Example : 
+	//.h//
+		@class myClass
+
+		@protocol MyClassDelegate <NSObject> 						//	<NSObject>	<!--define delegate protocol  
+		    - (void) myClassDelegateMethod: (MyClass *) sender;  	//define delegate method to be implemented within another class
+		@end
+
+		@interface myClass : NSObject{}
+			@property (nonatomic, weak) id <MyClassDelegate> delegate ; 
+		@end
+
+	//.m//
+		@implementation
+
+		@end
+
+------------------
+self vs @synthesize //http://stackoverflow.com/questions/21355705/synthesize-vs-use-of-self
+-------------------
+
+
+	You no longer have to explicitly use @synthesize for properties. 
+	If your professor was using it, it was just to be explicit and demonstrate whats happening under the hood.
+	If your property is defined in the .h file, accessors, mutators and instance variables are automatically generated. 
+	If you explicitly @synthesize those properties, they are accessible via whatever ivar name is provided after the directive. 
+	If @synthesize is not used, the automatically generated ivars are available through _somePropertyName.
+
+	In your example, with the @synthesize, the myResponse UILabel is accessible through the instance variable myResponse. Without the @synthesize, 
+	it is available through _myResponse. In both cases, it is available through self.myResponse. 
+
+	Its best practice to use the instance variables in any lifecycle methods, accessors, or mutators (-viewDidLoad, -viewWillAppear, -setMyResponse:, etc) 
+	and to use self.propertyName in all other methods to clearly distinguish the properties of a class from the instance variables.
+
+
+-----------------
+using mutable / immutable 
+-----------------
+
+
+	@interface MyClass : NSObject {
+
+	    //private variables
+
+	    NSMutableSet *widgets;
+
+	}
+
+	// ...
+
+	@end
+
+	 
+
+	@implementation MyClass
+
+	- (NSSet *)widgets {
+
+	    return (NSSet *)[[widgets copy] autorelease];
+
+	}
+
+
+
+-------------
+Collections
+-------------
+
+
+	(NS)Array 			: Ordered Collections
+	(NS)Set 			: Unordered Collections (of Objects) 
+	(NS)Ordered​Set		: Ordered Collections (of Objects)
+	(NS)Dictionary  	: Collections of keys and values
+	(NS)Index Sets 		: Storing Indexes into an Array 
+	(NS)Index Paths		: Storing a Path Through Nested Arrays 
+
+
+	(NS)Array 			
+	    -Can access items by index
+	    -Ordered
+	    -Allows duplicates
+
+	(NS)Set //like a list //			
+	    -Primarily access items by comparison
+	    -Unordered
+	    -Does not allow duplicates
+
+	(NS)Ordered​Set
+		- You can use ordered sets as an alternative to arrays when the order of elements is important and performance in testing whether an object is contained in the set 
+		is a consideration—testing for membership of an array is slower than testing for membership of a set
+
+	(NS)Dictionary
+
+	(NS)Index Sets 
+
+	(NS)Index Paths
+
+
+
+
+
+
+----------------
+NSSet vs NSArray
+----------------
+
+	When the order of the items in the collection is not important, 
+	sets offer better performance for finding items in the collection.
+
+	The reason is that a set uses hash values to find items (like a dictionary) 
+	while an array has to iterate over its entire contents to find a particular object.
+
+--------------
+static vs const
+--------------
+
+	------------
+	const
+	------------
+	
+		
+
+		Read it backwards...
+
+		    int* - pointer to int
+		    int const * - pointer to const int
+		    int * const - const pointer to int
+		    int const * const - const pointer to const int
+
+
+
+
+
+		const int x = 42;
+
+		const:	declares a constant integer variable. It means it’s value can’t be modified. It’s value is initially assigned to 42.
+		If you try to change its value later, the compiler will issue a warning, or an error, depending on your compiler settings.
+		So the following statement is invalid:
+
+		const int x = 42;
+		x = 43; 
+
+	--------------
+	const pointers
+	--------------
+
+		//declares a constant pointer to a char//
+		char * const str = "hello, world"; 
+
+			It means the the characters of the string can be modified, but not the pointer value.
+			So the variable ‘str’ cannot be assigned to another pointer.
+
+			This is invalid:
+				char * const str 	= "hello, world";
+				char * str2 		= "hello, universe";
+				str = str2; 
+			as your a modifying the pointer value (not the string value).
+
+			This is valid:
+				char * const str = strdup( "hello, world" );
+				str[ 0 ] = 'a'; 
+
+			Remember: the pointer can’t be modified, the value that is pointed can be.
+
+
+		//declares a pointer to a const char//
+		const char * str = "hello, world";
+
+	In sum : 
+		A modifiable pointer to a constant integer.
+		const int * x;
+
+		A constant pointer to an modifiable integer.
+		int * const x;
+
+		A constant pointer to a constant integer.
+		const int * const x;
+
+
+	---------
+	Static
+	---------
+
+	Static: (inside function) Value will persist across function calls.
+	Static: (outside function) Variable will be file scoped, meaning, variable will only be accessible within that file. It won't be accessible from other files.
+
+		Static inside function: 
+
+			void foo( void ){
+				int x = 0;
+				printf( "X - foo: %i\n", x );
+				x++;
+			}
+
+			void bar( void ){
+				static int x = 0;
+				printf( "X - bar: %i\n", x );
+				x++;
+			}
+
+			int main( void ){
+				foo();
+				foo();
+				foo();
+				bar();
+				bar();
+				bar();
+
+				return 0;
+			}	
+
+			Output: 
+			X - foo: 0
+			X - foo: 0
+			X - foo: 0
+			X - bar: 0
+			X - bar: 1
+			X - bar: 2 
+
+	
+		Static outside function: 
+
+			//foo.c//
+			 	int x = 42;
+				static int y = 42; 
+
+			//bar.c//
+				printf( x ); //works
+				printf( y ); //doesn't work
+
+---------------
+Global Variables
+---------------
+
+#import <...>
+
+// Your global variable definition.
+type variable;
+
+int main() {
+    ...
+
+Second, you need to let other source files know about it. You need to declare it in some .h file and import that file in all .m files you need your variable in:
+
+// .h file
+
+// Declaration of your variable.    
+extern type variable;
+
+Note that you cannot assign a value to variable in declaration block, otherwise it becomes a definition of that variable, and you end with linker error complaining on multiple definitions of the same name.
+
+To make things clear: each variable can be declared multiple times (Declaration says that this variable exists somewhere), but defined only once (definition actually creates memory for that variable).
+
+But beware, global variables are a bad coding practice, because their value may be unexpectedly changed in any of files, so you may encounter hard to debug errors. You can avoid global variables using Singleton pattern, for example.
+
+
+
+---------
+Struct
+---------
+
+A struct in the C programming language is a declaration that defines a list of variables to be placed under one name in a block of memory, allowing the different variables to be accessed via a single pointer. 
+
+
+------------
+Storage Classes (in C)
+-------------
+
+There are 4 storage classes in C:
+
+    auto 
+    	-Automatic variables have memory automatically allocated when a program enters a block, and released when the program leaves that block. Access to automatic variables is limited to only the block in which they are declared, as well as any nested blocks.
+    register 
+    	-(don't use) behaves just like auto, except that instead of being allocated onto the stack, they are stored in a register.
+    static - 
+    	-A static variable inside a method or function retains its value between invocations.
+    	-A static variable declared globally can be called by any function or method, so long as those functions appear in the same file as the static variable. The same goes for static functions.
+    extern
+    	-Whereas static makes functions and variables globally visible within a particular file, extern makes them visible globally to all files.
+
+------
+enum
+-----
+
+	An enumerator is a list of predefined variables. If you’re familiar with Objective C data types like int and double, you know that you can define variables to hold or return int and double values. Enumerators are also a data type – the only different is that you create the data type. With enumerators, you can create variables that will hold only a value found only in the enumerator. Enumerators are declared with the help of the “enum” keyword.
+
+	So what is the use of an enumerator type? If you were designing a calendar app, for example, you could use an enumerator type to store the values of the 12 months:
+
+		enum months {Jan, Feb, Mar, Apr, May, Jun, July, Aug, Sept, Oct, Nov, Dec};
+
+	Here, we’ve created an enumerator type called “months”. It is a collection of 12 elements. If you create a new variable and declare it to be of the “months” type, it will have to take one of the 12 possible values:
+
+		enum months {Jan, Feb, Mar, Apr, May, Jun, July, Aug, Sept, Oct, Nov, Dec};
+		enum months currentMonth;
+		currentMonth = June;
+
+-------
+Static Class Variables
+-------
+	// TheClass.h
+		@interface TheClass : NSObject
+		+ (int)count;
+		@end
+
+	// TheClass.m
+		static int theCount = 0;
+
+		@implementation TheClass
+		+ (int) count { return theCount; }
+		@end
+
+=============
+Composition
+============
+	Composition - allows for classes to inherit from multiple classes at once
+
+	@interface ClassAB {
+    	ClassA *objectA; 	<!--pointer to class A
+    	ClassB *objectB;	<!--pointer to class B
+    }
+		@property (nonatomic,strong) id propertyA;
+		@property (nonatomic,strong) id propertyB;
+	@end
+
+	@implementation ClassAB
+		- (id)propertyA { return objectA.propertyA; }
+		- (void)setPropertyA:(id)value { objectA.propertyA = value; }
+		- (id)propertyB { return objectB.propertyB; }
+		- (void)setPropertyB:(id)value { objectB.propertyB = value; }
+	@end
+
+===========
+Selectors
+===========
+	Selectors - identifies a method, acts like a 'dynamic function pointer'. 
+
+	***Selector Method does not have to be part of a class.****
+
+	Suppose you had a selector for the method run, and classes Dog, Athlete, and ComputerSimulation (each of which implemented a method run). 
+	The selector could be used with an instance of each of the classes to invoke its run method—even though the implementation might be different for each.
+
+	The whole idea behind selectors is to be able to pass around methods just like you pass around objects. 
+	This can be used, for example, to dynamically define an "action" for a Person object to execute later on in the program. 
+	
+	For example, consider the following interface:
+
+	// Person.m//
+		@implementation Person
+			- (void)sayHello   		{		NSLog(@"Hello, says %@.", self.name); }
+			- (void)sayGoodbye 		{		NSLog(@"Goodbye, says %@.", self.name); }
+			- (void)coerceFriend 	{		[self.friend performSelector:	self.action]; }
+		@end
+
+	//Person.h//
+		@interface
+			@property NSString name   ;
+			@property NSString friend ;
+			@property NSString action ;
+		@end
+	
+
+	//main.m//
+		
+		//****selector function****//
+		NSString *askUserForAction() {	
+		    NSString *theMethod = @"sayGoodbye";
+		    return theMethod;
+		}
+
+		Person *joe = [[Person alloc] init];
+				joe.name = @"Joe";
+        
+        Person *bill = [[Person alloc] init];
+        		bill.name = @"Bill";
+
+        joe.friend = bill;
+
+        //****assign selector function as action****//
+        joe.action = NSSelectorFromString(askUserForAction());  
+
+        [joe coerceFriend]
+
+============================================
+blocks vs. selectors vs. delegates
+============================================
