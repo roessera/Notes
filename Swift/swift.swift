@@ -4,6 +4,7 @@
 //string
 	
 	var a = String()
+	var a = String(){ /*Accessor Methods*/}
 	var a = ""
 	var a : String = ""
 	var a : String? 									//optional, says "This value may be of type String, otherwise it's nil"
@@ -28,10 +29,11 @@
 //struct
 
 	struct a {
+		
 		static var a = 0	 						//Type Property for structures
-		static func a (){} 	 						//Type Method
-
 		var a = 0									//Instance Property
+		
+		static func a (){} 	 						//Type Method
 		func a(){}									//Instance method
 
 		mutate func a(){}							//mutation method
@@ -64,31 +66,8 @@
 		
 	}
 
-//Placeholder
-	func swapTwoValues<T>(inout a: T, inout b: T){}
-
-//extension 
-
-	extension a: Protocol1, Protocol2 {}			
-
-
-//Type Aliases
-
-	typealias AudioSample = UInt16		   //Type aliases define an alternative name for an existing type. 
-
-//Sequences
-
-	//range
-		for i in 1...5 {} 
-
-		//is the same as:
-
-		var range = Range(start: 1, end: 5)
-		for i in range { println(i) }
-
-
-
-//Dictionary
+//Dictionary ()
+	
 	var a = [Int: String]()
 	var a = [:] 
 	
@@ -97,7 +76,61 @@
 	var a = ["YYZ": "Toronto Pearson", "DUB": "Dublin"] //shorthand
 	var a	["LHR"] = "London" //subscripting for adding
 
+//function
+	func a(name:String = "Aaron"){}	//Default Parameters
+	func a(names: String...){}		//Variadic Parameters
+	func a(inout names: String){}	//Inout Parameters
+	func a <T> (inout names:T){}	//Generic Parameters
+	func a (var name:String){}		//Variable Parameters
+	func a (#name:String){}			//external parameter
+	func a (name:String?){}			//Optional Parameter
 
+//Casting
+	
+	!  //“this might (be a?) trap,” 
+	?  //“this might be nil.”
+	
+	is //checks type. checks whether an instance is of a certain subclass type (Ex. item is Class)
+	as? //Downcasts to subclass, but might be nil
+	as	//Downcasts to subclass
+
+	AnyObject	//Must be a class
+	Any			//Must be a structure
+
+//Access Control
+
+	
+    //internal(default)	: available to the entire module that includes the definition (e.g. an app or framework target).
+    //private			: available only from within the source file where they are defined.
+    //public			: entities are intended for use as API, and can be accessed by any file that imports the module, e.g. as a framework used in several of your projects.
+    
+
+
+//Return Types
+	
+	[Void -> Void]	/*is the same as */ [ ()->() ]    //Void is simply a typealias to ()
+
+//Placeholder
+	func swapTwoValues<T>(inout a: T, inout b: T){}
+
+//extension 
+	extension a: Protocol1, Protocol2 {}			
+
+//Type Aliases
+	typealias AudioSample = UInt16		   //Type aliases define an alternative name for an existing type. 
+
+	//Swift provides two special type aliases for working with non-specific types:
+		AnyObject //can represent an instance of any class type.
+		Any		 //can represent an instance of any type at all, apart from function types.”
+
+//Sequences
+	//range
+	for i in 1...5 {} 
+
+		//is the same as:
+
+		var range = Range(start: 1, end: 5)
+		for i in range { println(i) }
 
 	//subscript
 	arrName[4...6] //gets items 4-6
@@ -118,7 +151,42 @@
 		println(i)
 	}
 
+//Optionals 
+	//variables that should have a default of nothing/nil, not say, 0 
 
+
+    //Use ? if the value can become nil in the future, so that you test for this.
+    //Use ! if it really shouldn't become nil in the future, but it needs to be nil initially.
+
+	
+	//these are the same
+    var a: Int?									//holds an int, but may be nil
+    var a: Optional<Int>
+
+    //these are the same
+    var height: Int? = 180
+    var height: Optional<Int> = Optional<Int>(180)
+
+	var a.b! 									//forced unwrapping of optional, 101% certain b has a value
+	var a.b? 									//"Im not sure b has a value, but use it if there is one"
+
+	//Ex.
+	if let var c = a.b{ 
+		/*code*/ 
+	}else{}		//checks if theres a value, then perform stuff 
+	//so you don't have to write: 
+	a.b?.c = true
+	a.b?.d = true
+	a.b?.e = true
+
+	let a as? Int								//returns nil if it's not an int
+	let a as  Int								//101% 
+		Ex.
+			switch a {
+				case let b as Int: 		println("a is a int")
+				case let b as Double: 	println("a is a double")
+				default: break
+			}
 
 //Dictionary
 	//keyType must be the same 
@@ -149,6 +217,14 @@
 		println("Airport name: \(airportName)")
 	}
 
+//Default values
+	var a : String?
+	var b : String = "hey"
+	var c : String = a ?? b
+
+	println(c) //"hey"
+
+
 //Functions
 
 	//syntax
@@ -168,28 +244,33 @@
 
 		}
 
+	// in-out 
+		//An in-out parameter has a value that is passed *in* to the function, is modified by the function, and is passed back *out* of the function to replace the original value.
+		func swapTwoInts(inout a: Int, inout b: Int) {
+
+		}
+		// & - tells function it can modify values passed in
+		swapTwoInts(&someInt, &anotherInt)
+
 	//external parameter name AKA NAMED PARAMETERS
-		func funName(externalArgName localArgName: argType){
+		func funName(externalName localName: argType){
 
 		}
 
 		//example//
 	    
 	    //doesnt use external names
-		    func join
-		    	(s1: String, s2: String, joiner: String) -> String { 
+		    func join (s1: String, s2: String, joiner: String) -> String {
 		    	return s1 + joiner + s2
 		    }
 
 		    //uses external names//
-		    func join
-		    	(string s1: String, toString s2: String, withJoiner joiner: String) -> String { 
+		    func join (string s1: String, toString s2: String, withJoiner joiner: String) -> String {
 		    	return s1 + joiner + s2
 		    }
 
 		    //or use # if internal name is appropriate to use externally//
-		    func join
-		    	(#string : String, #toString : String, #withJoiner: String) -> String { 
+		    func join (#string : String, #toString : String, #withJoiner: String) -> String {
 		    	return s1 + joiner + s2
 		    }
 
@@ -251,7 +332,7 @@
 		chooseStepFunction returns the stepForward function or the stepBackward function based on a Boolean parameter called backwards: 
 
 		    func chooseStepFunction(backwards: Bool) -> (Int) -> Int {
-		    return backwards ? stepBackward : stepForward
+		    	return backwards ? stepBackward : stepForward
 		    }
 
 	    You can now use chooseStepFunction to obtain a function that will step in one direction or the other: 
@@ -270,7 +351,8 @@
 
 //Closures//
 	
-	
+	//
+	var completionHandler:(Float)->Void = { arg in }
 	
 
 
@@ -281,7 +363,7 @@
 	sorted(names, backwards)
 	
 
-	-is equal to -
+	//-is equal to: //
 
 
 	sorted(names, { (s1: String, s2: String) -> Bool in
@@ -296,7 +378,7 @@
 
 //Ways to write a closure
 	//syntax//
-	{ 	(parameters) -> returntype in 
+	{ 	(parameters) -> returntype in return
 		
 		closure body
 
@@ -334,6 +416,14 @@
 	//makeIncrementor returns a function, and that function returns an int : 
 	func makeIncrementor(forIncrement amount: Int) -> () -> Int { }
 
+	/*
+	func map<U> 	(transform: (T) -> U) 	-> [U]
+
+		//map accepts a function as a argument. This function (named transform), 
+		//accepts type T as an argument, and returns type U.
+		//Once executed, map() returns an array of U's. 
+	*/
+
 //enums//
 	//An enumeration defines a common type for a group of related values and enables you to work with those values in a type-safe way within your code. 
 
@@ -364,14 +454,14 @@
 
 	//lazy property 
 
-		avoids unnecessary initialization until used
+		//avoids unnecessary initialization until used
 
-		Ex. lazy var importer = DataImporter()	
+		//Ex. lazy var importer = DataImporter()	
 
 	 
 	//Computed Properties 
 
-		don't store a values, but provide getter / setter functions to retrieve values indirectly
+		//don't store a values, but provide getter / setter functions to retrieve values indirectly
 	
 	
 		Ex. 
@@ -796,8 +886,153 @@
 
 
 
+//
+
+//Ex
+
+//*Share single struct (Config) between all instances of VideoMode */
+	//ex1.
+	struct Config {
+	    static var name = "Aaron"
+	}
+
+	class VideoMode {
+	    let c = Config.self  // <!--- the important part
+	    var interlaced = false
+	    var frameRate = 0.0
+	}
+
+
+	var a = VideoMode()
+	    a.c.name = "butt"
+	var b = VideoMode()
+
+	println(b.c.name)
 
 
 
+	println(a.c.name)
 
 
+	//ex2.
+
+	struct Config {
+	    static  var name = "Aaron"
+	    private	var name = "aaron"
+	    
+	    
+	}
+
+	var a = Config()
+	var b = Config.self
+
+	println(a.name)
+	println(b.name)
+
+
+//casting
+
+class myClass{
+    var name:String
+    init(name:String){
+        self.name = name
+    }
+}
+class myClass2{
+    var name:String
+    init(name:String){
+        self.name = name
+    }
+}
+
+let library = [
+    myClass(name:"hey"),
+    myClass(name:"hey2"),
+    myClass(name:"hey3")   
+]
+
+let library2 = [
+    myClass(name:"hey"),
+    myClass(name:"hey2"),
+    myClass2(name:"hey3")   
+]
+
+for element in library{
+    println(element.name) // "hey", "hey2", "hey3"
+}
+
+for element in library2{
+    println(element.name) // "nil", "nil", "nil"   
+}
+
+//works
+for element in library2{
+	if let item = element as? myClass{
+		println(item.name)
+    }
+    if let item2 = element as? myClass2{
+		println(item.name)
+    }
+}
+
+//also works 
+
+var library2:[AnyObject] = []
+
+library2.append(myClass(name:"hey"))
+library2.append(myClass2(name:"hello"))
+library2.append(myClass(name:"hey"))
+
+for element in library2{
+    
+    switch element{
+        case let item as myClass:   println(item.name)
+        case let item as myClass2:  println(item.name)
+        default:                    println("nope")
+        //case let item2 as? myClass2: println(item2.name)
+    }
+  
+   
+}
+
+//Ex3
+class MediaItem {
+	var name: String
+	init(name: String) {
+		self.name = name
+	}
+}
+class Movie: MediaItem {
+	var director: String
+	init(name: String, director: String) {
+		self.director = director
+		super.init(name: name)
+	}
+}
+class Song: MediaItem {
+	var artist: String
+	init(name: String, artist: String) {
+		self.artist = artist
+		super.init(name: name)
+	}
+}
+class Book {
+    var artist:String
+    init(name: String, artist: String) {
+		self.artist = artist
+		
+	}
+}
+let library = [
+	Movie(name: "Casablanca", director: "Michael Curtiz"),
+	Song(name: "Blue Suede Shoes", artist: "Elvis Presley"),
+	Movie(name: "Citizen Kane", director: "Orson Welles"),
+	Song(name: "The One And Only", artist: "Chesney Hawkes"),
+	Song(name: "Never Gonna Give You Up", artist: "Rick Astley")
+	,Book(name:"Moby", artist:"Wells")
+	
+]
+
+
+//
+generic type 'Array' declared here
