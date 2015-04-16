@@ -3,13 +3,21 @@
 
 //string
 	
-	var a = String()
 	var a = String(){ /*Accessor Methods*/}
+	var a = String()
 	var a = ""
 	var a : String = ""
 	var a : String? 									//optional, says "This value may be of type String, otherwise it's nil"
 	var b : a!											//forced unwrapping of the optional
 	var a : Character = "\u{E9}\u{20DD}"				//characters
+	var a : String = b ?? c								//Default value. Says "If B is nil, use C"
+	var a : String { get{} set{} } 						//Computed Property, Read and Write
+	var a : String { get{} }	 						//Computed Property, Read Only
+	var a : String { return "a" }						//Computed Property, Read Only
+	var a : String = "a" {								//Observers
+		willSet(val) {}										//called beforehand
+		didSet {}											//called afterwards
+	}
 
 //array
 	
@@ -23,8 +31,8 @@
 //tuple
 
 	var a 		 = (value1, value2)
-	var (b , c ) = a 						//breaks apart into its own values
-	var (b , _ ) = a						//when you only need the first value of tuple
+	var (b , c ) = a 									//breaks apart into its own values
+	var (b , _ ) = a									//when you only need the first value of tuple
 
 //struct
 
@@ -52,6 +60,7 @@
 		func a(){}									//Instance method
 
 		var a: Double { get{} set{} } 				//Computed Property, Read and Write
+		var a: Double { get{} }	 					//Computed Property, Read Only
 		var a: Double { return b }	 				//Computed Property, Read Only
 
 		override func a(){}							//Override superclass func
@@ -77,13 +86,13 @@
 	var a	["LHR"] = "London" //subscripting for adding
 
 //function
-	func a(name:String = "Aaron"){}	//Default Parameters
-	func a(names: String...){}		//Variadic Parameters
-	func a(inout names: String){}	//Inout Parameters
-	func a <T> (inout names:T){}	//Generic Parameters
-	func a (var name:String){}		//Variable Parameters
-	func a (#name:String){}			//external parameter
-	func a (name:String?){}			//Optional Parameter
+	func a(name:  String = "Aaron"){}	//Default Parameters
+	func a(names: String...){}			//Variadic Parameters
+	func a(inout names: String){}		//Inout Parameters
+	func a <T> (inout names:T){}		//Generic Parameters
+	func a (var name:String){}			//Variable Parameters
+	func a (#name:String){}				//external parameter
+	func a (name:String?){}				//Optional Parameter
 
 //Casting
 	
@@ -224,6 +233,8 @@
 
 	println(c) //"hey"
 
+//Operators
+	(a ?? b)		//which is the same as: (a != nil ? a! : b)
 
 //Functions
 
@@ -370,9 +381,34 @@
 		return s1 > s2
 	})
 
-
-
 	
+
+	Ex3
+		/* 
+			create a function called success() which accepts 0 arguments, 
+			and returns a function that accepts 1 argument (Int), 
+			which returns an Int 
+		*/
+
+
+		var success: ( (   )-> (Int)->Int) 
+		
+		var fail:    ( (Int)->  Int      )
+			fail = { (Int) in
+			    return 1
+			}
+
+		//**is the same as**//
+
+		func fail(Int) -> Int {
+			return 1
+		}
+
+		success = {
+		    return fail
+		}
+
+		
 	
 
 
@@ -530,7 +566,7 @@
 
 	////////
 
-	struct/enum (and string, array, dictionary): 
+	struct/enum/string/array/dictionary : 
 		value types, 
 		stored properties, 
 		computed properties

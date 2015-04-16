@@ -4,35 +4,34 @@
 
 
     //create protocol so our delegate (Class B) knows what function to call
-    protocol DelegateA {
-        required func callBack()
+    protocol Pro {
+        func doThat()
     }
 
-    //Class A
-    class A = {
-        //make sure our delegate is of type DelegateA
-        var delegate: DelegateA?
+
+    class A {
+       var delegate:Pro? //make sure our delegate is of type DelegateA
+       init(){
+       }
+       func doThis(){
+           self.delegate?.doThat()
+       }
+       
+    }
+
+    class B : Pro{
+        var a:A = A()
         init(){
-            self.dothat()
+            a.delegate = self //assign the delegate to this class
+            a.doThis()
         }
         func doThat(){
-            self.delegate?.callBack()
+           println("yep") 
         }
-
     }
 
-    //Class B
-    class B : DelegateA = {
-        var classA = A()
-        init(){
-            //assign the delegate to this class
-            classA.delegate = self
-        }
-        func callBack(){
-            println("done")
-        } 
 
-    }
+    var b = B()
 
 
 
@@ -56,11 +55,11 @@ class MyTimer: UIViewController {
     var delegate:MyTimerDelegate?
     
     // set up timer variables and labels
-        var timer:NSTimer! = NSTimer()      //timer for countdown
-        var labelTimer:NSTimer! = NSTimer() //timer for label
-        var timerLabel:UILabel! = UILabel() //label
-        var timerCount = 0
-        var duration = 0
+    var timer:NSTimer! = NSTimer()      //timer for countdown
+    var labelTimer:NSTimer! = NSTimer() //timer for label
+    var timerLabel:UILabel! = UILabel() //label
+    var timerCount = 0
+    var duration = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
