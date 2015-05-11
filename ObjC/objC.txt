@@ -653,3 +653,12 @@ Selectors
 ============================================
 blocks vs. selectors vs. delegates
 ============================================
+
+
+
+
+#define macro
+const
+static const
+extern const
+enum
