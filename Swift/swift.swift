@@ -1,6 +1,3 @@
-
-
-
 //string
 	
 	var a = String(){ /*Accessor Methods*/}
@@ -24,9 +21,25 @@
 	var a = [Int](); 
 	var a : [Type] = [element1, element2]
 	var a = [element1, element2] 						//shorthand
-	var a = [Int]() 									//creates new empty array
+	var a = [Int]() 									//creates new empty array of type Int
 	var a = [Double](count: 3, repeatedValue: 0.0) 		// a is of type [Double], and equals [0.0, 0.0, 0.0]
 	var a = arrName1 + arrName2  						//joins arrays together
+
+//Set - stores values of the same type, with no defined ordering
+
+	var a : Set 		= ["a", "b", "c"];
+	var a : Set<String> = ["a", "b", "c"];
+
+//Dictionary
+
+	var a : [KeyType, ValueType]();
+	var a : Dictionary<KeyType, ValueType> = [Key : Value];
+	var a = [Int: String]()
+	var a = [:] 
+	var a : [KeyType : ValueType] = [Key : Value , Key2 : Value2]; 
+	var a : [String: String] = ["YYZ": "Toronto Pearson", "DUB": "Dublin"]
+	var a = ["YYZ": "Toronto Pearson", "DUB": "Dublin"] //shorthand
+	var a	["LHR"] = "London" //subscripting for adding
 
 //tuple
 
@@ -38,11 +51,11 @@
 
 	struct a {
 		
-		static var a = 0	 						//Type Property for structures
-		var a = 0									//Instance Property
+		static  var a = 0	 						//Type(e.g. Constructor) Property for structures
+				var a = 0						    //Instance Property
 		
-		static func a (){} 	 						//Type Method
-		func a(){}									//Instance method
+		static  func a(){} 	 						//Type Method
+				func a(){}							//Instance method
 
 		mutate func a(){}							//mutation method
 
@@ -53,11 +66,11 @@
 
 	class a : Super, Protocol, Protocol2 {			//SuperClass, Protocol, Protocol2 are optional
 		
-		class var a = 0								//Type Property
-		class func a (){}							//Type Method
-
-		var a = 0									//Instance Property
-		func a(){}									//Instance method
+		class 	var a = 0							//Type Property
+				var a = 0							//Instance Property
+		
+		class   func a(){}							//Type Method
+				func a(){}							//Instance method
 
 		var a: Double { get{} set{} } 				//Computed Property, Read and Write
 		var a: Double { get{} }	 					//Computed Property, Read Only
@@ -75,16 +88,6 @@
 		
 	}
 
-//Dictionary ()
-	
-	var a = [Int: String]()
-	var a = [:] 
-	
-	var a : [KeyType : ValueType] = [Key : Value , Key2 : Value2]; 
-	var a : [String: String] = ["YYZ": "Toronto Pearson", "DUB": "Dublin"]
-	var a = ["YYZ": "Toronto Pearson", "DUB": "Dublin"] //shorthand
-	var a	["LHR"] = "London" //subscripting for adding
-
 //function
 	func a(name:  String = "Aaron"){}	//Default Parameters
 	func a(names: String...){}			//Variadic Parameters
@@ -100,7 +103,13 @@
 	?  //“this might be nil.”
 	
 	is //checks type. checks whether an instance is of a certain subclass type (Ex. item is Class)
-	as? //Downcasts to subclass, but might be nil
+	as? //Downcasts to subclass, but might be nil 
+		(Ex. 
+			//can <Optional> b be considered as a String ? 
+			if b as? String { 
+				//do string-only stuff ex b.uppercaseString;
+		    }
+		)
 	as	//Downcasts to subclass
 
 	AnyObject	//Must be a class
@@ -109,9 +118,9 @@
 //Access Control
 
 	
-    //internal(default)	: available to the entire module that includes the definition (e.g. an app or framework target).
-    //private			: available only from within the source file where they are defined.
-    //public			: entities are intended for use as API, and can be accessed by any file that imports the module, e.g. as a framework used in several of your projects.
+    internal //(default)	: available to the entire module that includes the definition (e.g. an app or framework target).
+    private	//		: available only from within the source file where they are defined.
+    public	//		: entities are intended for use as API, and can be accessed by any file that imports the module, e.g. as a framework used in several of your projects.
     
 
 
@@ -179,23 +188,26 @@
 	var a.b! 									//forced unwrapping of optional, 101% certain b has a value
 	var a.b? 									//"Im not sure b has a value, but use it if there is one"
 
-	//Ex.
-	if let var c = a.b{ 
-		/*code*/ 
-	}else{}		//checks if theres a value, then perform stuff 
-	//so you don't have to write: 
-	a.b?.c = true
-	a.b?.d = true
-	a.b?.e = true
+		//Ex.
+		if let var c = a.b{ 
+			/*code*/ 
+		}else{
 
-	let a as? Int								//returns nil if it's not an int
-	let a as  Int								//101% 
-		Ex.
-			switch a {
-				case let b as Int: 		println("a is a int")
-				case let b as Double: 	println("a is a double")
-				default: break
-			}
+		}		
+		//checks if theres a value, then perform stuff 
+		//so you don't have to write: 
+		a.b?.c = true
+		a.b?.d = true
+		a.b?.e = true
+
+		let a as? Int								//returns nil if it's not an int
+		let a as  Int								//101% 
+			Ex.
+				switch a {
+					case let b as Int: 		println("a is a int")
+					case let b as Double: 	println("a is a double")
+					default: break
+				}
 
 //Dictionary
 	//keyType must be the same 
@@ -833,6 +845,28 @@
 			println("Hello!")
 		})
 
+//Properties
+
+class Numbers {
+    
+    //class property
+    static var numberofNumbers:Int = 0;
+    
+    //computed property for class
+    static var computedTypeProperty: Int {
+        
+        return 27
+    
+    };
+    
+    //computed property for overable property
+    class var overrideableComputedTypeProperty: Int {
+        return 107
+    };
+    
+}
+
+
 
 //Generics//
 
@@ -1072,3 +1106,14 @@ let library = [
 
 //
 generic type 'Array' declared here
+
+
+//KVO in Swift
+The first options is to simply use the pre-existing Key-Value-Observing capability provided by NSObject. 
+In order to make a Swift type observable it must inherit from NSObject, 
+and any properties that you wish to observe need to be marked with the dynamic keyword:
+
+class Car: NSObject {
+  dynamic var miles = 0
+  dynamic var name = "Turbo"
+}
